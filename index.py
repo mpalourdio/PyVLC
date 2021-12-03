@@ -32,7 +32,7 @@ class MyPlayer:
         self.window.show()
 
     def playSong(self, song):
-        print("Now playing " + myPlayer.songs[self.currentSongIndex])
+        self.title = myPlayer.songs[self.currentSongIndex]
 
         # This is a singleton, no worry in fetching it all the time
         player = vlc.MediaPlayer()
@@ -52,7 +52,7 @@ class MyPlayer:
             self.playSong(myPlayer.songs[self.currentSongIndex])
 
     def __trackTime(self, event, player):
-        self.l1.setText(str(player.get_time()/1000) + " s")
+        self.l1.setText(self.title + " -> " + str(player.get_time() / 1000) + " s")
 
 
 myPlayer = MyPlayer()
