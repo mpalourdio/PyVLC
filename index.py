@@ -8,7 +8,7 @@
 import sys
 
 import vlc
-from PyQt5.QtWidgets import QApplication, QMainWindow
+from PyQt5.QtWidgets import QApplication, QLabel, QVBoxLayout, QWidget
 
 
 class MyPlayer:
@@ -19,6 +19,17 @@ class MyPlayer:
 
         # First song of the list, ok layzzz gooooo
         self.currentSongIndex = 0
+
+        # Build app layout
+        self.app = QApplication(sys.argv)
+        self.window = QWidget()
+        self.window.setWindowTitle("PyVLC")
+        self.l1 = QLabel()
+        self.vbox = QVBoxLayout()
+        self.vbox.addWidget(self.l1)
+        self.vbox.addStretch()
+        self.window.setLayout(self.vbox)
+        self.window.show()
 
     def playSong(self, song):
         print("Now playing " + myPlayer.songs[self.currentSongIndex])
@@ -41,15 +52,10 @@ class MyPlayer:
             self.playSong(myPlayer.songs[self.currentSongIndex])
 
     def __trackTime(self, event, player):
-        print(player.get_time())
+        self.l1.setText(str(player.get_time()/1000) + " s")
 
-
-app = QApplication(sys.argv)
-window = QMainWindow()
-window.show()
 
 myPlayer = MyPlayer()
 myPlayer.playSong(myPlayer.songs[myPlayer.currentSongIndex])
 
-sys.exit(app.exec_())
-
+sys.exit(myPlayer.app.exec_())
