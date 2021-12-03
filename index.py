@@ -30,7 +30,7 @@ class MyPlayer:
 
         events = player.event_manager()
         events.event_attach(vlc.EventType.MediaPlayerEndReached, self.__playNextSong)
-        events.event_attach(vlc.EventType.MediaPlayerTimeChanged, self.__mediaTimeChanged, player)
+        events.event_attach(vlc.EventType.MediaPlayerTimeChanged, self.__trackTime, player)
 
     def __playNextSong(self, event):
         # Next song we want to play is the next item in the list, hey!
@@ -40,7 +40,7 @@ class MyPlayer:
         if self.currentSongIndex < len(self.songs):
             self.playSong(myPlayer.songs[self.currentSongIndex])
 
-    def __mediaTimeChanged(self, event, player):
+    def __trackTime(self, event, player):
         print(player.get_time())
 
 
