@@ -6,9 +6,10 @@
 # CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 import sys
+from datetime import datetime
 
 import vlc
-from PyQt5.QtWidgets import QApplication, QLabel, QVBoxLayout, QWidget
+from PyQt5.QtWidgets import QApplication, QLabel, QVBoxLayout, QWidget, QPushButton
 
 
 class MyPlayer:
@@ -30,6 +31,16 @@ class MyPlayer:
         self.vbox.addWidget(self.l1)
         self.l2 = QLabel()
         self.vbox.addWidget(self.l2)
+        self.l3 = QLabel()
+        self.vbox.addWidget(self.l3)
+
+        self.button1 = QPushButton()
+        self.button1.setText("Button1")
+        self.vbox.addWidget(self.button1)
+        self.button1.clicked.connect(self.__buttonClicked)
+
+
+
         self.window.setLayout(self.vbox)
         self.window.show()
 
@@ -56,6 +67,10 @@ class MyPlayer:
     def __trackTime(self, event, player):
         self.l1.setText(self.title + " -> " + str(player.get_time() / 1000) + " s")
         self.l2.setText(str(player.get_position()))
+
+    def __buttonClicked (self):
+        self.l3.setText("Clicked at :" + datetime.now().strftime("%H:%M:%S"))
+
 
 
 myPlayer = MyPlayer()
