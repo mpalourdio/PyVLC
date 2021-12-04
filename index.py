@@ -5,18 +5,44 @@
 # IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 # CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-import sys
 from datetime import datetime
 
+import sys
 import vlc
+from PyQt5.QtCore import QThread, pyqtSignal
 from PyQt5.QtWidgets import QApplication, QLabel, QVBoxLayout, QWidget, QPushButton, QProgressBar
+
+
+class VlcThread(QThread):
+    songEnded = pyqtSignal(vlc.Event)
+    timeChanged = pyqtSignal(vlc.Event, vlc.MediaPlayer)
+
+    def __init__(self):
+        super().__init__()
+
+    def addSong(self, track):
+        self.track = track
+
+    def run(self):
+        player = vlc.MediaPlayer()
+        player.set_media(vlc.Media(self.track))
+        player.play()
+        self.vlc_events = player.event_manager()
+        self.vlc_events.event_attach(vlc.EventType.MediaPlayerEndReached, self.emitEndReached)
+        self.vlc_events.event_attach(vlc.EventType.MediaPlayerTimeChanged, self.emitTimeChanged, player)
+
+    def emitEndReached(self, event):
+        self.songEnded.emit(event)
+
+    def emitTimeChanged(self, event, player):
+        self.timeChanged.emit(event, player)
 
 
 class MyPlayer:
     def __init__(self):
         # List of songs You should fetch from your collection. Hard coded list for convenience
         # Replace this by your own files, located in the same directory as test.py to test
-        self.songs = ["tmp/1.mp3", "tmp/2.mp3"]
+        self.songs = ["tmp/1.flac", "tmp/2.flac", "tmp/3.flac"]
 
         # First song of the list, ok layzzz gooooo
         self.currentSongIndex = 0
@@ -45,18 +71,15 @@ class MyPlayer:
 
         self.window.setLayout(self.vbox)
         self.window.show()
+        self.vlcThread = VlcThread()
+        self.vlcThread.songEnded.connect(self.__playNextSong)
+        self.vlcThread.timeChanged.connect(self.__trackTime)
 
     def playSong(self, song):
         self.title = self.songs[self.currentSongIndex]
 
-        # This is a singleton, no worry in fetching it all the time
-        player = vlc.MediaPlayer()
-        player.set_media(vlc.Media(song))
-        player.play()
-
-        events = player.event_manager()
-        events.event_attach(vlc.EventType.MediaPlayerEndReached, self.__playNextSong)
-        events.event_attach(vlc.EventType.MediaPlayerTimeChanged, self.__trackTime, player)
+        self.vlcThread.addSong(song)
+        self.vlcThread.start()
 
     def __playNextSong(self, event):
         # Next song we want to play is the next item in the list, hey!
