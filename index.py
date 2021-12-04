@@ -19,17 +19,18 @@ class VlcThread(QThread):
 
     def __init__(self):
         super().__init__()
+        self.player = vlc.MediaPlayer()
+        self.vlc_events = self.player.event_manager()
+
 
     def addSong(self, track):
         self.track = track
 
     def run(self):
-        player = vlc.MediaPlayer()
-        player.set_media(vlc.Media(self.track))
-        player.play()
-        self.vlc_events = player.event_manager()
+        self.player.set_media(vlc.Media(self.track))
+        self.player.play()
         self.vlc_events.event_attach(vlc.EventType.MediaPlayerEndReached, self.emitEndReached)
-        self.vlc_events.event_attach(vlc.EventType.MediaPlayerTimeChanged, self.emitTimeChanged, player)
+        self.vlc_events.event_attach(vlc.EventType.MediaPlayerTimeChanged, self.emitTimeChanged, self.player)
 
     def emitEndReached(self, event):
         self.songEnded.emit(event)
