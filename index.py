@@ -24,15 +24,17 @@ class MyPlayer:
         self.app = QApplication(sys.argv)
         self.window = QWidget()
         self.window.setWindowTitle("PyVLC")
-        self.l1 = QLabel()
         self.vbox = QVBoxLayout()
-        self.vbox.addWidget(self.l1)
         self.vbox.addStretch()
+        self.l1 = QLabel()
+        self.vbox.addWidget(self.l1)
+        self.l2 = QLabel()
+        self.vbox.addWidget(self.l2)
         self.window.setLayout(self.vbox)
         self.window.show()
 
     def playSong(self, song):
-        self.title = myPlayer.songs[self.currentSongIndex]
+        self.title = self.songs[self.currentSongIndex]
 
         # This is a singleton, no worry in fetching it all the time
         player = vlc.MediaPlayer()
@@ -49,10 +51,11 @@ class MyPlayer:
 
         # Once the end of the list is reached, we do not play songs anymore, or we'll be out-of-bound
         if self.currentSongIndex < len(self.songs):
-            self.playSong(myPlayer.songs[self.currentSongIndex])
+            self.playSong(self.songs[self.currentSongIndex])
 
     def __trackTime(self, event, player):
         self.l1.setText(self.title + " -> " + str(player.get_time() / 1000) + " s")
+        self.l2.setText(str(player.get_position()))
 
 
 myPlayer = MyPlayer()
