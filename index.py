@@ -39,8 +39,6 @@ class MyPlayer:
         self.vbox.addWidget(self.button1)
         self.button1.clicked.connect(self.__buttonClicked)
 
-
-
         self.window.setLayout(self.vbox)
         self.window.show()
 
@@ -68,9 +66,8 @@ class MyPlayer:
         self.l1.setText(self.title + " -> " + str(player.get_time() / 1000) + " s")
         self.l2.setText(str(player.get_position()))
 
-    def __buttonClicked (self):
+    def __buttonClicked(self):
         self.l3.setText("Clicked at :" + datetime.now().strftime("%H:%M:%S"))
-
 
 
 myPlayer = MyPlayer()
