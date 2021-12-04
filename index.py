@@ -9,8 +9,8 @@ from datetime import datetime
 
 import sys
 import vlc
-from PyQt5.QtCore import QThread, pyqtSignal
-from PyQt5.QtWidgets import QApplication, QLabel, QVBoxLayout, QWidget, QPushButton, QProgressBar
+from PyQt5.QtCore import *
+from PyQt5.QtWidgets import *
 
 
 class VlcThread(QThread):
