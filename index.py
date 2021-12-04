@@ -9,7 +9,7 @@ import sys
 from datetime import datetime
 
 import vlc
-from PyQt5.QtWidgets import QApplication, QLabel, QVBoxLayout, QWidget, QPushButton
+from PyQt5.QtWidgets import QApplication, QLabel, QVBoxLayout, QWidget, QPushButton, QProgressBar
 
 
 class MyPlayer:
@@ -39,6 +39,10 @@ class MyPlayer:
         self.vbox.addWidget(self.button1)
         self.button1.clicked.connect(self.__buttonClicked)
 
+        self.pbar = QProgressBar()
+        self.pbar.setValue(0)
+        self.vbox.addWidget(self.pbar)
+
         self.window.setLayout(self.vbox)
         self.window.show()
 
@@ -65,6 +69,7 @@ class MyPlayer:
     def __trackTime(self, event, player):
         self.l1.setText(self.title + " -> " + str(player.get_time() / 1000) + " s")
         self.l2.setText(str(player.get_position()))
+        self.pbar.setValue(int(player.get_position() * 100))
 
     def __buttonClicked(self):
         self.l3.setText("Clicked at :" + datetime.now().strftime("%H:%M:%S"))
